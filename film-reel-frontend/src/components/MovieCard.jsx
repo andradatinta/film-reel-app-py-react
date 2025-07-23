@@ -1,23 +1,19 @@
 import { Button, Typography } from "@mui/material";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import React from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  addMovie,
-  isMovieFavorited,
-  removeMovie,
-} from "../features/favoriteMovies/favoriteMoviesSlice";
+import { isMovieFavorited } from "../features/favoriteMovies/favoriteMoviesSlice";
+import { handleAddFavorite, handleRemoveFavorite } from "../utils/dataHelpers";
 
 const MovieCard = ({ id, title, genre, poster }) => {
   const dispatch = useDispatch();
   const isFavorited = useSelector((state) => isMovieFavorited(state, id));
   const onFavoriteHandler = (movie) => {
     if (isFavorited) {
-      dispatch(removeMovie(movie));
+      handleRemoveFavorite(dispatch, movie.movie_id);
     } else {
-      dispatch(addMovie(movie));
+      handleAddFavorite(dispatch, movie.movie_id);
     }
   };
   return (
@@ -50,9 +46,10 @@ const MovieCard = ({ id, title, genre, poster }) => {
             size="medium"
             onClick={() =>
               onFavoriteHandler({
-                movieId: id,
-                movieTitle: title,
-                moviePoster: poster,
+                movie_id: id,
+                movie_title: title,
+                movie_poster: poster,
+                movie_genre: genre,
               })
             }
           >

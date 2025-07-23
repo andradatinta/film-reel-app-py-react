@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,13 @@ import {
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { addReview } from "../features/reviews/reviewsSlice";
+import { submitReview } from "../utils/dataHelpers";
 
 const AddReviewDialog = ({
   isModalOpen,
   handleAddReviewModalOnClose,
   movieTitle,
+  movieId,
 }) => {
   const {
     handleSubmit,
@@ -28,10 +29,12 @@ const AddReviewDialog = ({
 
   const onSubmit = (data) => {
     const reviewData = {
-      ...data,
-      movieTitle,
+      movie_id: movieId,
+      user_full_name: data.name,
+      rating: data.rating,
+      text: data.review,
     };
-    dispatch(addReview(reviewData));
+    submitReview(dispatch, reviewData);
     setHasSubmitted(true);
   };
   return (

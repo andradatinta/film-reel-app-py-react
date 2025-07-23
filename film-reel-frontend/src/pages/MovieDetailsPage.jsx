@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { getMovieDetails } from "../utils/dataHelpers";
 import { Typography, CircularProgress, Button } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import AddReviewDialog from "../components/AddReviewDialog";
-import { useSelector } from "react-redux";
-import { selectAllReviews } from "../features/reviews/reviewsSlice";
 import AllReviewsDialog from "../components/AllReviewsModal";
 import MovieDetailsInfo from "../components/MovieDetailsInfo";
 
@@ -16,12 +14,12 @@ const MovieDetailsPage = () => {
   const [isAddReviewModalOpen, setIsAddReviewModalOpen] = useState(false);
   const [isAllReviewsModalOpen, setIsAllReviewsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const allReviews = useSelector((state) => selectAllReviews(state));
 
   const fetchMovieDetails = async () => {
     setLoading(true);
     const movieDetails = await getMovieDetails(id);
     setMovieDetails(movieDetails);
+    console.log("movieDetails", movieDetails);
     setLoading(false);
   };
 
@@ -96,11 +94,13 @@ const MovieDetailsPage = () => {
             isModalOpen={isAddReviewModalOpen}
             handleAddReviewModalOnClose={handleAddReviewModalOnClose}
             movieTitle={movieDetails.title}
+            movieId={movieDetails.id}
           />
           <AllReviewsDialog
             isModalOpen={isAllReviewsModalOpen}
             handleAllReviewsModalOnClose={handleAllReviewsModalOnClose}
             movieTitle={movieDetails.title}
+            movieId={movieDetails.id}
           />
         </div>
       </div>

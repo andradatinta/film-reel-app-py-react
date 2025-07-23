@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,16 +8,29 @@ import {
   Button,
 } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { selectAllReviewsForMovie } from "../features/reviews/reviewsSlice";
+import { loadReviews } from "../utils/dataHelpers";
 
 const AllReviewsDialog = ({
   isModalOpen,
   handleAllReviewsModalOnClose,
   movieTitle,
+  movieId,
 }) => {
+  const dispatch = useDispatch();
   const movieReviews = useSelector((state) =>
-    selectAllReviewsForMovie(state, movieTitle)
+    selectAllReviewsForMovie(state, movieId)
   );
+
+  console.log("movieReviews", movieReviews);
+
+  useEffect(() => {
+    if (isModalOpen && movieId !== undefined) {
+      loadReviews(dispatch, movieId);
+    }
+  }, [dispatch, movieId, isModalOpen]);
+
   return (
     <>
       <Dialog
@@ -32,9 +45,9 @@ const AllReviewsDialog = ({
           <div className="flex flex-col gap-4">
             {movieReviews.map((review) => (
               <div className="flex flex-col gap-2">
-                <Typography>From: {review.name}</Typography>
+                <Typography>From: {review.user_full_name}</Typography>
                 <Typography>Rating: {review.rating} </Typography>
-                <Typography>Review: {review.review ?? "-"} </Typography>
+                <Typography>Review: {review.text ?? "-"} </Typography>
               </div>
             ))}
           </div>

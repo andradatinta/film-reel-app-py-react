@@ -1,4 +1,3 @@
-import React from "react";
 import { getGenreNameFromId } from "../utils/dataHelpers";
 import { Typography } from "@mui/material";
 
@@ -8,7 +7,7 @@ const MovieDetailsInfo = ({ movieDetails }) => {
       <Typography variant="h6" className="mt-4">
         Genre
       </Typography>
-      <Typography>{getGenreNameFromId(movieDetails.genres[0].id)}</Typography>
+      <Typography>{movieDetails.genre}</Typography>
       <Typography variant="h6" className="mt-4">
         Overview
       </Typography>
@@ -24,7 +23,7 @@ const MovieDetailsInfo = ({ movieDetails }) => {
       <Typography variant="h6" className="mt-4">
         Budget
       </Typography>
-      <Typography>{movieDetails.budget}</Typography>
+      <Typography>{movieDetails.budget ?? "Unknown"}</Typography>
     </>
   );
 };

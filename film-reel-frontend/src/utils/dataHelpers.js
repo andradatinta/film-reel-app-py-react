@@ -1,49 +1,96 @@
 import axios from "axios";
-
-const tmbdKey = process.env.REACT_APP_TMDB_KEY;
+import {
+  setFavorites,
+  addMovie,
+  removeMovie,
+} from "../features/favoriteMovies/favoriteMoviesSlice";
+import {
+  setReviewsForMovie,
+  addReview,
+} from "../features/reviews/reviewsSlice";
 
 export const getPopularMoviesList = async () => {
   try {
-    const response = await axios.get(
-      "https://api.themoviedb.org/3/movie/popular",
-      {
-        params: {
-          api_key: tmbdKey,
-          page: Math.floor(Math.random() * 50) + 1,
-        },
-      }
-    );
+    const response = await axios.get("http://localhost:8000/movies");
+
     if (response.status === 200) {
-      const movies = response.data.results;
-      if (movies.length > 12) {
-        return movies.slice(0, 12);
-      }
+      return response.data;
     }
   } catch (error) {
-    console.log(error);
+    console.error("Failed to fetch movies:", error);
     return [];
   }
 };
 
 export const getMovieDetails = async (id) => {
   try {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${id}`,
-      {
-        params: {
-          api_key: tmbdKey,
-        },
-      }
-    );
-
+    const response = await axios.get(`http://localhost:8000/movies/${id}`);
     if (response.status === 200) {
-      if (response.data) {
-        return response.data;
-      }
+      return response.data;
     }
   } catch (error) {
-    console.log(error);
+    console.error("Failed to fetch movie details:", error);
     return {};
+  }
+};
+
+export const loadFavorites = async (dispatch) => {
+  try {
+    const res = await axios.get("http://localhost:8000/favorites");
+    const favoriteIds = res.data;
+
+    const detailedMovies = await Promise.all(
+      favoriteIds.map(async (id) => {
+        const response = await axios.get(`http://localhost:8000/movies/${id}`);
+        const movie = response.data;
+        return {
+          movie_id: movie.id,
+          movie_title: movie.title,
+          movie_poster: movie.poster_path,
+          movie_genre: movie.genre,
+        };
+      })
+    );
+
+    dispatch(setFavorites(detailedMovies));
+  } catch (err) {
+    console.error("Failed to load favorites", err);
+  }
+};
+
+export const handleAddFavorite = async (dispatch, movie_id) => {
+  try {
+    await axios.post("http://localhost:8000/favorites", { movie_id });
+    dispatch(addMovie({ movie_id }));
+  } catch (err) {
+    console.error("Failed to add favorite", err);
+  }
+};
+
+export const handleRemoveFavorite = async (dispatch, movie_id) => {
+  try {
+    await axios.delete(`http://localhost:8000/favorites/${movie_id}`);
+    dispatch(removeMovie({ movie_id }));
+  } catch (err) {
+    console.error("Failed to remove favorite", err);
+  }
+};
+
+export const loadReviews = async (dispatch, movie_id) => {
+  try {
+    const res = await axios.get(`http://localhost:8000/reviews/${movie_id}`);
+    dispatch(setReviewsForMovie({ movie_id, reviews: res.data }));
+  } catch (err) {
+    console.error("Failed to load reviews", err);
+  }
+};
+
+export const submitReview = async (dispatch, reviewData) => {
+  try {
+    await axios.post("http://localhost:8000/reviews", reviewData);
+    dispatch(addReview({ movie_id: reviewData.movie_id, review: reviewData }));
+  } catch (err) {
+    console.error("Failed to submit review", err);
   }
 };
 

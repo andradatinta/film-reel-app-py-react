@@ -34,7 +34,7 @@ const HomePage = () => {
             key={movie.id}
             id={movie.id}
             title={movie.title}
-            genre={getGenreNameFromId(movie.genre_ids[0])}
+            genre={movie.genre}
             poster={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
           />
         ))}
