@@ -1,30 +1,31 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from app.database import get_connection
+from app.firebase_auth import verify_firebase_token
 
 router = APIRouter()
 
 
 class Review(BaseModel):
     movie_id: int
-    user_id: int = 1  # hardcoded for now
     user_full_name: str
     rating: float
     text: str
 
 
 @router.post("/reviews")
-async def add_review(review: Review):
+async def add_review(review: Review, user=Depends(verify_firebase_token)):
+    user_id = user["uid"]
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
             """
             INSERT INTO reviews (movie_id, user_id, user_full_name, rating, text)
             VALUES (?, ?, ?, ?, ?)
-        """,
+            """,
             (
                 review.movie_id,
-                review.user_id,
+                user_id,
                 review.user_full_name,
                 review.rating,
                 review.text,
@@ -35,11 +36,15 @@ async def add_review(review: Review):
 
 
 @router.get("/reviews/{movie_id}")
-async def get_reviews(movie_id: int):
+async def get_reviews(movie_id: int, user=Depends(verify_firebase_token)):
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT user_full_name, rating, text FROM reviews WHERE movie_id = ?",
+            """
+            SELECT user_full_name, rating, text
+            FROM reviews
+            WHERE movie_id = ?
+            """,
             (movie_id,),
         )
         rows = cursor.fetchall()

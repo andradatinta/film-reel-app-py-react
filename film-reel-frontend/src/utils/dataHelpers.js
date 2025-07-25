@@ -8,6 +8,20 @@ import {
   setReviewsForMovie,
   addReview,
 } from "../features/reviews/reviewsSlice";
+import { auth } from "../auth/firebaseConfig";
+
+export const getAuthHeaders = async () => {
+  const user = auth.currentUser;
+  if (!user) return {};
+
+  const token = await user.getIdToken();
+  console.log("Token: ", token);
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 export const getPopularMoviesList = async () => {
   try {
@@ -36,12 +50,16 @@ export const getMovieDetails = async (id) => {
 
 export const loadFavorites = async (dispatch) => {
   try {
-    const res = await axios.get("http://localhost:8000/favorites");
+    const config = await getAuthHeaders();
+    const res = await axios.get("http://localhost:8000/favorites", config);
     const favoriteIds = res.data;
 
     const detailedMovies = await Promise.all(
       favoriteIds.map(async (id) => {
-        const response = await axios.get(`http://localhost:8000/movies/${id}`);
+        const response = await axios.get(
+          `http://localhost:8000/movies/${id}`,
+          config
+        );
         const movie = response.data;
         return {
           movie_id: movie.id,
@@ -60,7 +78,8 @@ export const loadFavorites = async (dispatch) => {
 
 export const handleAddFavorite = async (dispatch, movie_id) => {
   try {
-    await axios.post("http://localhost:8000/favorites", { movie_id });
+    const config = await getAuthHeaders();
+    await axios.post("http://localhost:8000/favorites", { movie_id }, config);
     dispatch(addMovie({ movie_id }));
   } catch (err) {
     console.error("Failed to add favorite", err);
@@ -69,7 +88,8 @@ export const handleAddFavorite = async (dispatch, movie_id) => {
 
 export const handleRemoveFavorite = async (dispatch, movie_id) => {
   try {
-    await axios.delete(`http://localhost:8000/favorites/${movie_id}`);
+    const config = await getAuthHeaders();
+    await axios.delete(`http://localhost:8000/favorites/${movie_id}`, config);
     dispatch(removeMovie({ movie_id }));
   } catch (err) {
     console.error("Failed to remove favorite", err);
@@ -78,7 +98,11 @@ export const handleRemoveFavorite = async (dispatch, movie_id) => {
 
 export const loadReviews = async (dispatch, movie_id) => {
   try {
-    const res = await axios.get(`http://localhost:8000/reviews/${movie_id}`);
+    const config = await getAuthHeaders();
+    const res = await axios.get(
+      `http://localhost:8000/reviews/${movie_id}`,
+      config
+    );
     dispatch(setReviewsForMovie({ movie_id, reviews: res.data }));
   } catch (err) {
     console.error("Failed to load reviews", err);
@@ -87,93 +111,10 @@ export const loadReviews = async (dispatch, movie_id) => {
 
 export const submitReview = async (dispatch, reviewData) => {
   try {
-    await axios.post("http://localhost:8000/reviews", reviewData);
+    const config = await getAuthHeaders();
+    await axios.post("http://localhost:8000/reviews", reviewData, config);
     dispatch(addReview({ movie_id: reviewData.movie_id, review: reviewData }));
   } catch (err) {
     console.error("Failed to submit review", err);
   }
-};
-
-export const movieGenres = [
-  {
-    id: 28,
-    name: "Action",
-  },
-  {
-    id: 12,
-    name: "Adventure",
-  },
-  {
-    id: 16,
-    name: "Animation",
-  },
-  {
-    id: 35,
-    name: "Comedy",
-  },
-  {
-    id: 80,
-    name: "Crime",
-  },
-  {
-    id: 99,
-    name: "Documentary",
-  },
-  {
-    id: 18,
-    name: "Drama",
-  },
-  {
-    id: 10751,
-    name: "Family",
-  },
-  {
-    id: 14,
-    name: "Fantasy",
-  },
-  {
-    id: 36,
-    name: "History",
-  },
-  {
-    id: 27,
-    name: "Horror",
-  },
-  {
-    id: 10402,
-    name: "Music",
-  },
-  {
-    id: 9648,
-    name: "Mystery",
-  },
-  {
-    id: 10749,
-    name: "Romance",
-  },
-  {
-    id: 878,
-    name: "Science Fiction",
-  },
-  {
-    id: 10770,
-    name: "TV Movie",
-  },
-  {
-    id: 53,
-    name: "Thriller",
-  },
-  {
-    id: 10752,
-    name: "War",
-  },
-  {
-    id: 37,
-    name: "Western",
-  },
-];
-
-export const getGenreNameFromId = (genreId) => {
-  const genre = movieGenres.find((g) => g.id === genreId);
-  return genre ? genre.name : "Unknown";
 };

@@ -19,7 +19,6 @@ const MovieDetailsPage = () => {
     setLoading(true);
     const movieDetails = await getMovieDetails(id);
     setMovieDetails(movieDetails);
-    console.log("movieDetails", movieDetails);
     setLoading(false);
   };
 

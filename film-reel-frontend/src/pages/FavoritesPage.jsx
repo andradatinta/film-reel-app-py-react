@@ -8,7 +8,6 @@ import MovieCard from "../components/MovieCard";
 const FavoritesPage = () => {
   const dispatch = useDispatch();
   const favoriteMovies = useSelector(selectFavoriteMovies);
-  console.log(favoriteMovies);
 
   useEffect(() => {
     loadFavorites(dispatch);

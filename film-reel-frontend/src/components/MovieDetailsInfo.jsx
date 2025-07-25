@@ -1,4 +1,3 @@
-import { getGenreNameFromId } from "../utils/dataHelpers";
 import { Typography } from "@mui/material";
 
 const MovieDetailsInfo = ({ movieDetails }) => {

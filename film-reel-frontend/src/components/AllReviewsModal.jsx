@@ -23,8 +23,6 @@ const AllReviewsDialog = ({
     selectAllReviewsForMovie(state, movieId)
   );
 
-  console.log("movieReviews", movieReviews);
-
   useEffect(() => {
     if (isModalOpen && movieId !== undefined) {
       loadReviews(dispatch, movieId);

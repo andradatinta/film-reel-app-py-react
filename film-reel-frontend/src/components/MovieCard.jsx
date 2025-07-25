@@ -5,17 +5,26 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { isMovieFavorited } from "../features/favoriteMovies/favoriteMoviesSlice";
 import { handleAddFavorite, handleRemoveFavorite } from "../utils/dataHelpers";
+import { useAuth } from "../auth/AuthContext";
 
 const MovieCard = ({ id, title, genre, poster }) => {
   const dispatch = useDispatch();
   const isFavorited = useSelector((state) => isMovieFavorited(state, id));
+  const { isLoggedIn } = useAuth();
+
   const onFavoriteHandler = (movie) => {
+    if (!isLoggedIn) {
+      alert("Please log in to add or remove favorites.");
+      return;
+    }
+
     if (isFavorited) {
       handleRemoveFavorite(dispatch, movie.movie_id);
     } else {
       handleAddFavorite(dispatch, movie.movie_id);
     }
   };
+
   return (
     <div className="bg-[#495057] sm:w-[360px] w-full sm:h-60 h-full rounded-md flex sm:flex-row flex-col overflow-hidden shadow-light">
       <div className="sm:w-1/2 w-full sm:h-full h-2/3">

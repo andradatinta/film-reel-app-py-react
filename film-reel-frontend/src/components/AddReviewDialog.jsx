@@ -12,6 +12,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { submitReview } from "../utils/dataHelpers";
+import { useAuth } from "../auth/AuthContext";
 
 const AddReviewDialog = ({
   isModalOpen,
@@ -26,6 +27,7 @@ const AddReviewDialog = ({
   } = useForm();
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const dispatch = useDispatch();
+  const { isLoggedIn } = useAuth();
 
   const onSubmit = (data) => {
     const reviewData = {
@@ -46,7 +48,11 @@ const AddReviewDialog = ({
         onClose={handleAddReviewModalOnClose}
       >
         <DialogTitle>{`Add Review for ${movieTitle}`}</DialogTitle>
-        {!hasSubmitted ? (
+        {!isLoggedIn ? (
+          <Typography className="p-6 text-center text-lg">
+            Please log in to leave a review.
+          </Typography>
+        ) : !hasSubmitted ? (
           <form onSubmit={handleSubmit(onSubmit)}>
             <DialogContent>
               <div className="flex flex-col gap-4">

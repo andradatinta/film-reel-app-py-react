@@ -8,15 +8,18 @@ import customTheme from "./styles/customTheme";
 import { ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 import { store } from "./app/store";
+import { AuthProvider } from "./auth/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <ThemeProvider theme={customTheme}>
-          <App />
-        </ThemeProvider>
+        <AuthProvider>
+          <ThemeProvider theme={customTheme}>
+            <App />
+          </ThemeProvider>
+        </AuthProvider>
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

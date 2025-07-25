@@ -1,5 +1,5 @@
-import { getPopularMoviesList, getGenreNameFromId } from "../utils/dataHelpers";
-import { useState, React, useEffect } from "react";
+import { getPopularMoviesList } from "../utils/dataHelpers";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import MovieCard from "../components/MovieCard";
 import ReplayIcon from "@mui/icons-material/Replay";

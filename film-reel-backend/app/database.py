@@ -34,7 +34,7 @@ def create_favorites_table():
             """
             CREATE TABLE IF NOT EXISTS favorites (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER,
+                user_id TEXT,
                 movie_id INTEGER
             )
         """
@@ -50,7 +50,7 @@ def create_reviews_table():
             CREATE TABLE IF NOT EXISTS reviews (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 movie_id INTEGER,
-                user_id INTEGER,
+                user_id TEXT,
                 user_full_name TEXT,
                 rating REAL,
                 text TEXT
