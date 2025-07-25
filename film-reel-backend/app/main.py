@@ -7,7 +7,6 @@ from app.database import (
     create_favorites_table,
     create_reviews_table,
 )
-from app.seed import seed_movies
 
 from app.routes import movies, favorites, reviews
 
@@ -18,7 +17,6 @@ async def lifespan(app: FastAPI):
     create_movies_table()
     create_favorites_table()
     create_reviews_table()
-    await seed_movies()
     yield
 
 
@@ -33,8 +31,3 @@ app.add_middleware(
 app.include_router(movies.router)
 app.include_router(favorites.router)
 app.include_router(reviews.router)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Film Reel API test"}
