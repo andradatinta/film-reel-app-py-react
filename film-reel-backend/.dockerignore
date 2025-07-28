@@ -1,11 +1,11 @@
 # .dockerignore
 
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+**pycache**/
+_.pyc
+_.pyo
+_.pyd
 env/
 venv/
-*.db
-*.sqlite
-*.log
+_.db
+_.sqlite
+_.log

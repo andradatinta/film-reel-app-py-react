@@ -1,0 +1,20 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./film-reel-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./film-reel-backend:/app
+    environment:
+      - PORT=8000
+
+  frontend:
+    build:
+      context: ./film-reel-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
