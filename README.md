@@ -139,6 +139,8 @@ film-reel-backend/app/firebase-admin-key.json
 - Client-side state caching is also handled using **Redux slices** for movies, favorites, and reviews
 
 ---
+![FilmReelDemo](https://github.com/user-attachments/assets/cb6b2796-43c5-4ead-8770-3a3089e89feb)
+---
 
 ## 🎉 Future Enhancements
 
