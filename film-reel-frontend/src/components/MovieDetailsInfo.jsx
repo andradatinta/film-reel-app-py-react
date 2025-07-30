@@ -22,7 +22,16 @@ const MovieDetailsInfo = ({ movieDetails }) => {
       <Typography variant="h6" className="mt-4">
         Budget
       </Typography>
-      <Typography>{movieDetails.budget ?? "Unknown"}</Typography>
+      <Typography>
+        {" "}
+        {movieDetails.budget
+          ? new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              minimumFractionDigits: 0,
+            }).format(movieDetails.budget)
+          : "Unknown"}
+      </Typography>
     </>
   );
 };

@@ -16,8 +16,9 @@ The project is built using **React + FastAPI** and is fully containerized with *
 - 🎥 View randomly selected popular movies from TMDB
 - ℹ️ Fetch and display **detailed info** for each movie
 - 📄 **Submit and view reviews** (with name, rating, and text)
+- 🛡️ Full **user authorization on both frontend and backend** using Firebase JWT
+- 🔁 Intelligent **movie regeneration logic with Redis caching**
 - 🔊 Interactive UI using **TailwindCSS + MUI**
-- 🛡️ Full **user authorization with JWT tokens** (via Firebase)
 - 🏐 Interactive **FastAPI Swagger UI** at [`/docs`](http://localhost:8000/docs)
 
 ---
@@ -26,7 +27,8 @@ The project is built using **React + FastAPI** and is fully containerized with *
 
 ### Movie Endpoints
 
-- `GET /movies` - List all seeded movies
+- `GET /movies` - List all seeded movies (cached with Redis for 60 seconds)
+- `GET /movies?force_refresh=true` - Force regeneration of random movies from DB
 - `GET /movies/{movie_id}` - Fetch full movie details by ID
 
 ### Favorites (Protected)
@@ -50,7 +52,7 @@ All protected routes require a valid Firebase **Bearer Token** in the Authorizat
 
 - ☑️ **React 18**
 - ☑️ **React Router 6**
-- ☑️ **Redux Toolkit**
+- ☑️ **Redux Toolkit** (client-side caching for movies, favorites, and reviews)
 - ☑️ **Firebase Auth SDK**
 - ☑️ **Axios**
 - ☑️ **TailwindCSS** & **Material UI (MUI)**
@@ -61,13 +63,15 @@ All protected routes require a valid Firebase **Bearer Token** in the Authorizat
 - ☑️ **httpx** for async TMDB calls
 - ☑️ **SQLite** for lightweight storage
 - ☑️ **Firebase Admin SDK** for secure JWT decoding
+- ☑️ **Redis** for API response caching
+- ☑️ **fastapi-cache2** for Redis integration
 - ☑️ **CORS Middleware** for cross-origin requests
 
 ### DevOps
 
 - ☑️ **Docker** + **Docker Compose**
 - ☑️ `.dockerignore` for optimized builds
-- ☑️ Separate containers for **frontend** and **backend**
+- ☑️ Separate containers for **frontend**, **backend**, and **Redis**
 
 ---
 
@@ -128,9 +132,11 @@ film-reel-backend/app/firebase-admin-key.json
 
 ## 💡 Additional Notes
 
-- Uses **Bearer Token Auth** extracted from Firebase for route protection
+- Uses **Bearer Token Auth** extracted from Firebase for route protection (both frontend and backend enforced)
 - Automatically **creates DB schema** at startup via FastAPI lifespan hook
 - TMDB data is seeded via a `scripts/seed_movies.py` script
+- Redis caching improves backend performance for frequently requested data (like the `/movies` endpoint)
+- Client-side state caching is also handled using **Redux slices** for movies, favorites, and reviews
 
 ---
 
@@ -140,3 +146,7 @@ film-reel-backend/app/firebase-admin-key.json
 - Email Verification
 - Pagination for `/movies`
 - Cloud Deployment (Render, Fly.io, Railway)
+
+---
+
+> Built with passion, patience, and popcorn — Film Reel ✨
