@@ -23,9 +23,13 @@ export const getAuthHeaders = async () => {
   };
 };
 
-export const getPopularMoviesList = async () => {
+export const getPopularMoviesList = async (isRegenerate = false) => {
   try {
-    const response = await axios.get("http://localhost:8000/movies");
+    const url = isRegenerate
+      ? "http://localhost:8000/movies?force_refresh=true"
+      : "http://localhost:8000/movies";
+
+    const response = await axios.get(url);
 
     if (response.status === 200) {
       return response.data;

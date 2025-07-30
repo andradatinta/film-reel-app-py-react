@@ -10,6 +10,10 @@ from app.database import (
 
 from app.routes import movies, favorites, reviews
 
+from redis import asyncio as aioredis
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,6 +21,10 @@ async def lifespan(app: FastAPI):
     create_movies_table()
     create_favorites_table()
     create_reviews_table()
+
+    redis = aioredis.from_url("redis://redis:6379", encoding="utf8")
+    FastAPICache.init(RedisBackend(redis), prefix="film-reel-cache")
+
     yield
 
 

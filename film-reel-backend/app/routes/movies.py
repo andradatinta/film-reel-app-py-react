@@ -1,12 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request, Query
+from fastapi_cache import FastAPICache
+from fastapi_cache.decorator import cache
 from app.database import get_connection
 from pydantic import BaseModel
+
 import random
 
 router = APIRouter()
 
 
-# Define the Movie Pydantic response model
 class Movie(BaseModel):
     id: int
     title: str
@@ -19,13 +21,17 @@ class Movie(BaseModel):
 
 
 @router.get("/movies", response_model=list[Movie])
-async def get_movies():
+@cache(expire=60)
+async def get_movies(request: Request, force_refresh: bool = Query(False)):
+
+    if force_refresh:
+        await FastAPICache.clear(namespace=None)
+
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM movies")
         rows = cursor.fetchall()
 
-    # Pick 12 random movies
     selected = random.sample(rows, min(12, len(rows)))
 
     return [
@@ -44,6 +50,7 @@ async def get_movies():
 
 
 @router.get("/movies/{movie_id}")
+@cache(expire=900)
 async def get_movie_by_id(movie_id: int):
     with get_connection() as conn:
         cursor = conn.cursor()

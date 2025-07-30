@@ -6,8 +6,8 @@ import ReplayIcon from "@mui/icons-material/Replay";
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
 
-  const fetchPopularMovies = async () => {
-    const data = await getPopularMoviesList();
+  const fetchPopularMovies = async (isRegenerate = false) => {
+    const data = await getPopularMoviesList(isRegenerate);
     setMovies(data);
   };
 
@@ -23,7 +23,7 @@ const HomePage = () => {
         sx={{ marginTop: "16px" }}
         startIcon={<ReplayIcon />}
         onClick={() => {
-          fetchPopularMovies();
+          fetchPopularMovies(true);
         }}
       >
         Regenerate

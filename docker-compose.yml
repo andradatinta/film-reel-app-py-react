@@ -10,6 +10,8 @@ services:
       - ./film-reel-backend:/app
     environment:
       - PORT=8000
+    depends_on:
+      - redis
 
   frontend:
     build:
@@ -18,3 +20,9 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
